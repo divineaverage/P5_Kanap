@@ -55,7 +55,7 @@ function productDetails(product) {
       alert("Added to cart");
     }
 
-    // Get product details //
+    // Get product selection details //
     let userSelection = {
       id: product._id,
       name: product.name,
