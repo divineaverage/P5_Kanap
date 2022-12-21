@@ -60,73 +60,79 @@ async function displayCart(products) {
 // Display for empty cart
 let cartContents = viewCart();
 if (cartContents > 0) {
-    displayCart(viewCart)
+  displayCart(viewCart);
 } else {
-    cartProducts.innerHTML = "<h1> is currently empty </h1>";
-    priceTotal. textContent = "0";
-    qtyTotal. textContent = "0";
+  cartProducts.innerHTML = "<h1> is currently empty </h1>";
+  priceTotal.textContent = "0";
+  qtyTotal.textContent = "0";
 }
 
 // Validate form entry - Regex
-
+function ValidateEmail(inputText) {
+  var mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+  if (inputText.value.match(mailformat)) {
+    alert("Valid email address!");
+    document.form1.text1.focus();
+    return true;
+  } else {
+    alert("You have entered an invalid email address!");
+    document.form1.text1.focus();
+    return false;
+  }
+}
 
 // Check contact form information
-const order = () => {
+function order() {
+  const orderBtn = document.getElementById("order");
+  orderBtn.addEventListener("click", (data) => {
+    let contact = {
+      firstName: document.querySelector("#firstName").value,
+      lastName: document.querySelector("#lastName").value,
+      address: document.querySelector("#address").value,
+      city: document.querySelector("#city").value,
+      email: document.querySelector("#email").value,
+    };
+    // Test form fields
+    if (testFirstName(contact.firstName) &&
+      testName(contact.lastName) == true &&
+      testcity(contact.city) == true &&
+      testemail(contact.email) == true &&
+      testlocation(contact.address) == true) {
+      // Create "products" table for back
+      data.preventDefault();
+      let cart = getCart();
+      let products = [];
 
-
-    const orderBtn = document.getElementById("order");
-    orderBtn.addEventListener("click", (data) => {
-
-      let contact = {
-        firstName: document.querySelector("#firstName").value,
-        lastName: document.querySelector("#lastName").value,
-        address: document.querySelector("#address").value,
-        city: document.querySelector("#city").value,
-        email: document.querySelector("#email").value,
-      };
-      // Test form fields
-      if (
-        (testFirstName(contact.firstName)) &&
-        (testName(contact.lastName) == true) &&
-        (testcity(contact.city) == true) &&
-        (testemail(contact.email) == true) &&
-        (testlocation(contact.address) == true)
-      ) {
-        // Create "products" table for back
-        data.preventDefault();
-        let cart = getCart();
-        let products = [];
- 
-        // Push product ID from local storage into "products" table
-        for (let item of cart) {
-          products.push(article.idProduct);
-        }
-        // Create object
-        const order = {
-          contact,
-          products: products,
-        };
-        // POST request parameters
-        const options = {
-          method: "POST",
-          body: JSON.stringify(order),
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-        };
-        // Request sent, API returns the order id
-        fetch("http://localhost:3000/api/products/order", options)
-          .then((response) => response.json())
-          .then((data) => {
-            document.location.href = "confirmation.html?id=" + data.orderId;
-          })
-          // Display error
-          .catch((err) => {
-            console.log("Error in request: " + err.message);
-          });
+      // Push product ID from local storage into "products" table
+      for (let item of cart) {
+        products.push(article.idProduct);
       }
-    });
- };
- 
- order();
+      // Create object
+      const order = {
+        contact,
+        products: products,
+      };
+      // POST request parameters
+      const options = {
+        method: "POST",
+        body: JSON.stringify(order),
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+      };
+      // Request sent, API returns the order id
+      fetch("http://localhost:3000/api/products/order", options)
+        .then((response) => response.json())
+        .then((data) => {
+          document.location.href = "confirmation.html?id=" + data.orderId;
+        })
+        // Display error
+        .catch((err) => {
+          console.log("Error in request: " + err.message);
+        });
+    }
+  });
+}
+
+order();
