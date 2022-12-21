@@ -1,21 +1,20 @@
-//Get existing cart
+// Get existing cart
 async function viewCart() {
-  return JSON.parse(localStorage.getItem("myCart"));
+  return JSON.parse(localStorage.getItem("myCart")) ?? [];
 }
 
-
-//Get product info
+// Get product info
 async function getProduct(id) {
   const response = await fetch(`http://localhost:3000/api/products/${id}`);
   return response.json();
 }
 
-//DOM elements
+// DOM elements
 const priceTotal = document.getElementById("totalPrice");
 const cartProducts = document.getElementById("cart__items");
 const qtyTotal = document.getElementById("totalQuantity");
 
-//HTML fill
+// HTML fill
 function fillCartHTML(product, item) {
   return `<article class="cart__item" data-id="${item.idProduct}" data-color="${item.colorProduct}">
     <div class="cart__item__img">
@@ -40,7 +39,7 @@ function fillCartHTML(product, item) {
   </article>`;
 }
 
-//Display new cart
+// Display new cart
 async function displayCart(products) {
   let qty = 0;
   let price = 0;
@@ -58,7 +57,7 @@ async function displayCart(products) {
   return true;
 }
 
-//display for empty cart
+// Display for empty cart
 let cartContents = viewCart();
 if (cartContents > 0) {
     displayCart(viewCart)
@@ -67,3 +66,67 @@ if (cartContents > 0) {
     priceTotal. textContent = "0";
     qtyTotal. textContent = "0";
 }
+
+// Validate form entry - Regex
+
+
+// Check contact form information
+const order = () => {
+
+
+    const orderBtn = document.getElementById("order");
+    orderBtn.addEventListener("click", (data) => {
+
+      let contact = {
+        firstName: document.querySelector("#firstName").value,
+        lastName: document.querySelector("#lastName").value,
+        address: document.querySelector("#address").value,
+        city: document.querySelector("#city").value,
+        email: document.querySelector("#email").value,
+      };
+      // Test form fields
+      if (
+        (testFirstName(contact.firstName)) &&
+        (testName(contact.lastName) == true) &&
+        (testcity(contact.city) == true) &&
+        (testemail(contact.email) == true) &&
+        (testlocation(contact.address) == true)
+      ) {
+        // Create "products" table for back
+        data.preventDefault();
+        let cart = getCart();
+        let products = [];
+ 
+        // Push product ID from local storage into "products" table
+        for (let item of cart) {
+          products.push(article.idProduct);
+        }
+        // Create object
+        const order = {
+          contact,
+          products: products,
+        };
+        // POST request parameters
+        const options = {
+          method: "POST",
+          body: JSON.stringify(order),
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+        };
+        // Request sent, API returns the order id
+        fetch("http://localhost:3000/api/products/order", options)
+          .then((response) => response.json())
+          .then((data) => {
+            document.location.href = "confirmation.html?id=" + data.orderId;
+          })
+          // Display error
+          .catch((err) => {
+            console.log("Error in request: " + err.message);
+          });
+      }
+    });
+ };
+ 
+ order();
