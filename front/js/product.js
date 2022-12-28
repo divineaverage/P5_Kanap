@@ -64,6 +64,7 @@ function productDetails(product) {
       description: product.description,
       color: selectedColor.value,
       quantity: parseInt(selectedQuantity.value, 10),
+      price: product.price * parseInt(selectedQuantity.value, 10),
     };
 
     // Local Storage //

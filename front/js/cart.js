@@ -1,6 +1,6 @@
 // Get existing cart
-async function viewCart() {
-  return JSON.parse(localStorage.getItem("myCart")) ?? [];
+function viewCart() {
+  return JSON.parse(localStorage.getItem("cart")) ?? [];
 }
 
 // Get product info
@@ -15,21 +15,22 @@ const cartProducts = document.getElementById("cart__items");
 const qtyTotal = document.getElementById("totalQuantity");
 
 // HTML fill
-function fillCartHTML(product, item) {
-  return `<article class="cart__item" data-id="${item.idProduct}" data-color="${item.colorProduct}">
+
+function fillCartHTML(product) {
+  return `<article class="cart__item" data-id="${product.id}" data-color="${product.color}">
     <div class="cart__item__img">
-      <img src="${product.imageUrl}" alt="${product.altTxt}">
+      <img src="${product.img}" alt="${product.altTxt}">
     </div>
     <div class="cart__item__content">
       <div class="cart__item__content__description">
       <h2>${product.name}</h2>
-      <p>${item.colorProduct}</p>
-      <p>${product.price} €</p>
+      <p>${product.color}</p>
+      <p>${product.price}€</p>
       </div>
       <div class="cart__item__content__settings">
         <div class="cart__item__content__settings__quantity">
-          <p>Quantity : </p>
-          <input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value="42">
+          <p>Quantity: </p>
+          <input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value="${product.quantity}">
         </div>
         <div class="cart__item__content__settings__delete">
           <p class="deleteItem">Delete</p>
@@ -40,29 +41,66 @@ function fillCartHTML(product, item) {
 }
 
 // Display new cart
-async function displayCart(products) {
+function displayCart(products) {
   let qty = 0;
   let price = 0;
   for (const product of products) {
-    await getProduct(item.idProduct).then(function (prod) {
-      cartProducts.innerHTML += getCartItemHTML(prod, item);
-      //price
-      price += prod.price * item.qtyProduct;
-      priceTotal.textContent = price;
-      //quantity
-      qty += item.qtyProduct;
-      qtyTotal.textContent = qty;
+    cartProducts.innerHTML += fillCartHTML(product);
+    price += product.price;
+    qty += product.quantity;
+  }
+  priceTotal.textContent = price;
+  qtyTotal.textContent = qty;
+}
+
+////////
+
+//Delete item from cart
+function deleteProduct() {
+  let removeItem = document.querySelectorAll("deleteItem");
+
+  for (let i = 0; i < removeItem.length; i++) {
+    let deleteOne = deleteItem[i];
+
+    deleteOne.addEventListener("click", () => {
+      productLocalStorage.splice(i, 1); 
+      localStorage.setItem("product", JSON.stringify(productLocalStorage));
+      alert("Product has been removed.");
+      window.location.reload();
     });
   }
-  return true;
 }
+
+//Modify cart item
+function changeQuantity() {
+  let itemQuantity = document.getElementsByClassName("itemQuantity");
+  console.log(itemQuantity);
+
+  for (let i = 0; i < itemQuantity.length; i++) {
+    let changeQuantity = itemQuantity[i];
+
+    changeQuantity.addEventListener("input", (event) => {
+      itemQuantity.innerHTML += `<input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100"
+          value="${event.target.value}">`;
+
+      productLocalStorage[i].productQuantity = Number(changeQuantity.value);
+
+      localStorage.setItem("product", JSON.stringify(productLocalStorage));
+
+      updateCart(i);
+    });
+  }
+}
+
+////////
 
 // Display for empty cart
 let cartContents = viewCart();
-if (cartContents > 0) {
-  displayCart(viewCart);
+console.log(cartContents);
+if (cartContents.length > 0) {
+  displayCart(cartContents);
 } else {
-  cartProducts.innerHTML = "<h1> is currently empty </h1>";
+  cartProducts.innerHTML = "<h1> is currently empty.</h1>";
   priceTotal.textContent = "0";
   qtyTotal.textContent = "0";
 }
@@ -93,11 +131,13 @@ function order() {
       email: document.querySelector("#email").value,
     };
     // Test form fields
-    if (testFirstName(contact.firstName) &&
+    if (
+      testFirstName(contact.firstName) &&
       testName(contact.lastName) == true &&
       testcity(contact.city) == true &&
       testemail(contact.email) == true &&
-      testlocation(contact.address) == true) {
+      testlocation(contact.address) == true
+    ) {
       // Create "products" table for back
       data.preventDefault();
       let cart = getCart();
@@ -105,7 +145,7 @@ function order() {
 
       // Push product ID from local storage into "products" table
       for (let item of cart) {
-        products.push(article.idProduct);
+        products.push(item.idProduct);
       }
       // Create object
       const order = {
@@ -127,12 +167,16 @@ function order() {
         .then((data) => {
           document.location.href = "confirmation.html?id=" + data.orderId;
         })
-        // Display error
         .catch((err) => {
           console.log("Error in request: " + err.message);
         });
+    } else {
+      e.preventDefault();
+      console.log("Please review the form for errors.");
     }
   });
 }
 
-order();
+order()
+deleteProduct()
+changeQuantity()
