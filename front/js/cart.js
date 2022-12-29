@@ -70,10 +70,10 @@ function displayCart(products) {
 
 //Modify cart
 function changeQuantity(cart) {
-  for (let input of document.getElementsByName("itemQuantity")) {
+  for (let input of document.getElementById("itemQuantity")) {
       let productId = input.closest("article").dataset.id;
 
-      input.addEventListener('change', function () {
+      input.addEventListener("change", function() {
           productId.quantity = parseInt(input.value);
 
           viewCart(cart);
