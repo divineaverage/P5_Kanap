@@ -1,6 +1,10 @@
 // Get existing cart
 function viewCart() {
-  return JSON.parse(localStorage.getItem("cart")) ?? [];
+  const cart = JSON.parse(localStorage.getItem("cart"));
+  if (typeof cart === "string") {
+    return JSON.parse(cart);
+  }
+  return cart || [];
 }
 
 // Get product info
@@ -51,48 +55,50 @@ function displayCart(products) {
   }
   priceTotal.textContent = price;
   qtyTotal.textContent = qty;
-}
 
-////////
+  let buttons = document.querySelectorAll(".deleteItem");
+  console.log("Deleted item", buttons);
 
-//Delete item from cart
-function deleteProduct() {
-  let removeItem = document.querySelectorAll("deleteItem");
-
-  for (let i = 0; i < removeItem.length; i++) {
-    let deleteOne = deleteItem[i];
-
-    deleteOne.addEventListener("click", () => {
-      productLocalStorage.splice(i, 1); 
-      localStorage.setItem("product", JSON.stringify(productLocalStorage));
-      alert("Product has been removed.");
-      window.location.reload();
+  for (const button of buttons) {
+    button.addEventListener("click", (e) => {
+      const parent = e.target.closest(".cart__item");
+      parent.parentNode.removeChild(parent);
     });
   }
+  changeQuantity();
 }
 
-//Modify cart item
-function changeQuantity() {
-  let itemQuantity = document.getElementsByClassName("itemQuantity");
-  console.log(itemQuantity);
+//Modify cart
+function changeQuantity(cart) {
+  for (let input of document.getElementsByName("itemQuantity")) {
+      let productId = input.closest("article").dataset.id;
 
-  for (let i = 0; i < itemQuantity.length; i++) {
-    let changeQuantity = itemQuantity[i];
+      input.addEventListener('change', function () {
+          productId.quantity = parseInt(input.value);
 
-    changeQuantity.addEventListener("input", (event) => {
-      itemQuantity.innerHTML += `<input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100"
-          value="${event.target.value}">`;
+          viewCart(cart);
 
-      productLocalStorage[i].productQuantity = Number(changeQuantity.value);
-
-      localStorage.setItem("product", JSON.stringify(productLocalStorage));
-
-      updateCart(i);
-    });
+          displayCart();
+      })
   }
 }
+// function changeQuantity() {
+//   let itemQuantity = document.getElementsByClassName("itemQuantity");
+//   console.log(itemQuantity);
 
-////////
+//   for (let i = 0; i < itemQuantity.length; i++) {
+//     let changeQuantity = itemQuantity[i];
+
+//     changeQuantity.addEventListener("input", (event) => {  // get the items id and find the items index in array
+      
+//       changeQuantity.productQuantity = Number(event.target.value); //get items # in array and mutate the array values
+      
+//       localStorage.setItem("cart", JSON.stringify(previousCart)); 
+      
+//       updateCart(i);
+//     });
+//   }
+// }
 
 // Display for empty cart
 let cartContents = viewCart();
@@ -177,6 +183,4 @@ function order() {
   });
 }
 
-order()
-deleteProduct()
-changeQuantity()
+order();
