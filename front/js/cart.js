@@ -78,7 +78,7 @@ function changeQuantity(cart) {
 
           viewCart(cart);
 
-          displayCart();
+          displayCart(products);
       })
   }
 }
