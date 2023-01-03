@@ -17,6 +17,7 @@ async function getProduct(id) {
 const priceTotal = document.getElementById("totalPrice");
 const cartProducts = document.getElementById("cart__items");
 const qtyTotal = document.getElementById("totalQuantity");
+const cartQuantity = document.getElementById("itemQuantity");
 
 // HTML fill
 
@@ -69,36 +70,16 @@ function displayCart(products) {
 }
 
 //Modify cart
-function changeQuantity(cart) {
-  for (let input of document.getElementById("itemQuantity")) {
-      let productId = input.closest("article").dataset.id;
-
-      input.addEventListener("change", function() {
-          productId.quantity = parseInt(input.value);
-
-          viewCart(cart);
-
-          displayCart(products);
-      })
+function changeQuantity(products) {
+  for (let input of Object.keys(cartQuantity || {})) {
+    let productId = input.closest("article").dataset.id;
+    input.addEventListener("change", function () {
+      productId.quantity = parseInt(input.value);
+      localStorage.setItem('cart', data);
+      viewCart(products);
+    });
   }
 }
-// function changeQuantity() {
-//   let itemQuantity = document.getElementsByClassName("itemQuantity");
-//   console.log(itemQuantity);
-
-//   for (let i = 0; i < itemQuantity.length; i++) {
-//     let changeQuantity = itemQuantity[i];
-
-//     changeQuantity.addEventListener("input", (event) => {  // get the items id and find the items index in array
-      
-//       changeQuantity.productQuantity = Number(event.target.value); //get items # in array and mutate the array values
-      
-//       localStorage.setItem("cart", JSON.stringify(previousCart)); 
-      
-//       updateCart(i);
-//     });
-//   }
-// }
 
 // Display for empty cart
 let cartContents = viewCart();
