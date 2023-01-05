@@ -1,12 +1,3 @@
-// Get existing cart
-function viewCart() {
-  const cart = JSON.parse(localStorage.getItem("cart"));
-  if (typeof cart === "string") {
-    return JSON.parse(cart);
-  }
-  return cart || [];
-}
-
 // Get product info
 async function getProduct(id) {
   const response = await fetch(`http://localhost:3000/api/products/${id}`);
@@ -14,13 +5,18 @@ async function getProduct(id) {
 }
 
 // DOM elements
-const priceTotal = document.getElementById("totalPrice");
-const cartProducts = document.getElementById("cart__items");
-const qtyTotal = document.getElementById("totalQuantity");
 const cartQuantity = document.getElementById("itemQuantity");
+const cartProducts = document.getElementById("cart__items");
+const priceTotal = document.getElementById("totalPrice");
+const quantityTotal = document.getElementById("totalQuantity");
+const productId = document.getElementById("id");
+
+// Global variables
+var price = 0;
+var qty = 0;
+
 
 // HTML fill
-
 function fillCartHTML(product) {
   return `<article class="cart__item" data-id="${product.id}" data-color="${product.color}">
     <div class="cart__item__img">
@@ -45,19 +41,34 @@ function fillCartHTML(product) {
   </article>`;
 }
 
-// Display new cart
-function displayCart(products) {
-  let qty = 0;
-  let price = 0;
+// Get existing cart from Local Storage
+function viewCart() {
+  const cart = JSON.parse(localStorage.getItem("cart"));
+  if (typeof cart === "string") {
+    return JSON.parse(cart);
+  }
+  return cart || [];
+}
+
+//Populate cart
+function displayCart(products) { 
   for (const product of products) {
     cartProducts.innerHTML += fillCartHTML(product);
     price += product.price;
     qty += product.quantity;
   }
   priceTotal.textContent = price;
-  qtyTotal.textContent = qty;
+  quantityTotal.textContent = qty;
 
-  let buttons = document.querySelectorAll(".deleteItem");
+  deleteItem();
+  modifyQuantity();
+
+;
+}
+
+//Delete item
+function deleteItem() {
+  let buttons = document.getElementsByClassName("deleteItem");
   console.log("Deleted item", buttons);
 
   for (const button of buttons) {
@@ -65,21 +76,32 @@ function displayCart(products) {
       const parent = e.target.closest(".cart__item");
       parent.parentNode.removeChild(parent);
     });
+    removeProduct ();
   }
-  changeQuantity();
+}
+
+//Delete from Local Storage
+function removeProduct() {
+  let products = HTMLCollection;
+  if (productId > -1) {
+    products.splice(index, 1);
+  }
 }
 
 //Modify cart
-function changeQuantity(products) {
-  for (let input of Object.keys(cartQuantity || {})) {
-    let productId = input.closest("article").dataset.id;
-    input.addEventListener("change", function () {
-      productId.quantity = parseInt(input.value);
-      localStorage.setItem('cart', data);
-      viewCart(products);
-    });
+function modifyQuantity() {
+  const quantityPickers = document.getElementsByClassName("itemQuantity");
+  console.log("Modified item", quantityPickers);
+
+  for (const input of quantityPickers)
+  input.addEventListener("change", updateValue);
+  
+  function updateValue(e) {
+    price.textContent = e.target.value;
   }
-}
+};
+
+
 
 // Display for empty cart
 let cartContents = viewCart();
@@ -89,7 +111,7 @@ if (cartContents.length > 0) {
 } else {
   cartProducts.innerHTML = "<h1> is currently empty.</h1>";
   priceTotal.textContent = "0";
-  qtyTotal.textContent = "0";
+  quantityTotal.textContent = "0";
 }
 
 // Validate form entry - Regex
