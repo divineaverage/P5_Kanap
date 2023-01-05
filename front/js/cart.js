@@ -42,7 +42,7 @@ function fillCartHTML(product) {
 }
 
 // Get existing cart from Local Storage
-function viewCart() {
+function getCartFromLS() {
   const cart = JSON.parse(localStorage.getItem("cart"));
   if (typeof cart === "string") {
     return JSON.parse(cart);
@@ -76,15 +76,6 @@ function deleteItem() {
       const parent = e.target.closest(".cart__item");
       parent.parentNode.removeChild(parent);
     });
-    removeProduct ();
-  }
-}
-
-//Delete from Local Storage
-function removeProduct() {
-  let products = HTMLCollection;
-  if (productId > -1) {
-    products.splice(index, 1);
   }
 }
 
@@ -104,7 +95,7 @@ function modifyQuantity() {
 
 
 // Display for empty cart
-let cartContents = viewCart();
+let cartContents = getCartFromLS();
 console.log(cartContents);
 if (cartContents.length > 0) {
   displayCart(cartContents);
