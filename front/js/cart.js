@@ -15,7 +15,6 @@ const productId = document.getElementById("id");
 var price = 0;
 var qty = 0;
 
-
 // HTML fill
 function fillCartHTML(product) {
   return `<article class="cart__item" data-id="${product.id}" data-color="${product.color}">
@@ -51,48 +50,72 @@ function getCartFromLS() {
 }
 
 //Populate cart
-function displayCart(products) { 
+function displayCart(products) {
+  //set param to products
   for (const product of products) {
+    //for variable of iterable, sequentially - products
     cartProducts.innerHTML += fillCartHTML(product);
+    //get variable's DOM "cart__items" and add result of fillCartHTML function
     price += product.price;
+    //add the price of this single product to the total price
     qty += product.quantity;
+    //add the quantity of this single product to the total quantity
   }
   priceTotal.textContent = price;
+  //"price" equals the text content within the DOM "totalPrice"
   quantityTotal.textContent = qty;
+  //"qty" equals the text content within the DOM "totalQuantity"
 
   deleteItem();
   modifyQuantity();
-
-;
 }
 
 //Delete item
 function deleteItem() {
+  // function, no param
   let buttons = document.getElementsByClassName("deleteItem");
+  // set "buttons" to DOM "deleteItem" within this function
   console.log("Deleted item", buttons);
+  // console log
 
   for (const button of buttons) {
-    button.addEventListener("click", (e) => {
-      const parent = e.target.closest(".cart__item");
-      parent.parentNode.removeChild(parent);
+    // for variable of iterable, sequentially - buttons
+    button.addEventListener("click", function (e) {
+      // addEventListener (type, listener) - click, function
+      const object = e.target.closest(".cart__item");
+      // set "object" to the closest "cart__item" to the object dispatched (here, the entire product object)
+      object.parentNode.removeChild(object);
+      // returns the parent of "object" and removes its child (which is "object")
     });
+    setCartToLS();
+    // sets the local storage to the new cart with item deleted
   }
 }
 
 //Modify cart
 function modifyQuantity() {
+  //function, no param
   const quantityPickers = document.getElementsByClassName("itemQuantity");
+  // set "quantityPickers" to DOM "itemQuantity"
   console.log("Modified item", quantityPickers);
+  // console log
 
   for (const input of quantityPickers)
-  input.addEventListener("change", updateValue);
-  
+  //for variable of iterable, sequentially - the input of each button
+    input.addEventListener("change", updateValue);
+    //adds event listener 
+
   function updateValue(e) {
+    const price = getPrice();
     price.textContent = e.target.value;
   }
-};
+}
 
-
+// Set new cart in Local Storage
+function setCartToLS() {
+  const cart = JSON.parse(localStorage.getItem("cart"));
+  localStorage.setItem("cart", JSON.stringify(cart));
+}
 
 // Display for empty cart
 let cartContents = getCartFromLS();
