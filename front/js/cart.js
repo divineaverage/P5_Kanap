@@ -11,9 +11,7 @@ const priceTotal = document.getElementById("totalPrice");
 const quantityTotal = document.getElementById("totalQuantity");
 const cart = JSON.parse(localStorage.getItem("cart"));
 
-// Global variables
-var price = 0;
-var qty = 0;
+
 
 // HTML fill
 function fillCartHTML(product) {
@@ -25,7 +23,7 @@ function fillCartHTML(product) {
       <div class="cart__item__content__description">
       <h2>${product.name}</h2>
       <p>${product.color}</p>
-      <div class="item__price"><p>${product.price}€</p></div>
+      <p class="item__subtotal"><p>${product.price}€</p>
       </div>
       <div class="cart__item__content__settings">
         <div class="cart__item__content__settings__quantity">
@@ -60,22 +58,22 @@ function displayCart(products) {
     qty += product.quantity;
     //add the quantity of this single product to the total quantity
   }
+  var price = 0;
+  var qty = 0;
+
   priceTotal.textContent = price;
   //"price" equals the text content within the DOM "totalPrice"
   quantityTotal.textContent = qty;
   //"qty" equals the text content within the DOM "totalQuantity"
 
   deleteItem();
-  // modifyQuantity();
+  modifyCart();
 }
 
 //Delete item
 function deleteItem() {
-  // function, no param
   let buttons = document.getElementsByClassName("deleteItem");
-  // set "buttons" to DOM "deleteItem" within this function
   console.log("Delete item", buttons);
-  // console log
 
   for (const button of buttons) {
     button.addEventListener("click", function (e) {
@@ -84,31 +82,32 @@ function deleteItem() {
       object.parentNode.removeChild(object);
       localStorage.removeItem(object);
 
-      // get the cart before deleting
-      const oldCart = JSON.parse(localStorage.getItem("cart"));
-      // filter out the item to be deleted
-      const newCart = oldCart.filter((item) => item.id !== theIdToDelete);
-      // override 'cart' with an updated array
-      localStorage.setItem('cart', JSON.stringify(newCart));
+      // // get the cart before deleting
+      // const oldCart = JSON.parse(localStorage.getItem("cart"));
+      // // filter out the item to be deleted
+      // const newCart = oldCart.filter((item) => item.id !== theIdToDelete);
+      // // override 'cart' with an updated array
+      // localStorage.setItem('cart', JSON.stringify(newCart));
       
     });
   }
 }
 
 //Modify cart
-function modifyQuantity() {
-  const stepper = document.getElementsByClassName("itemQuantity");
-  console.log ("Modify item", stepper);
+function modifyCart() {
+  const nodeList = document.getElementsByName("itemQuantity");
+  const itemQuants = Array.from(nodeList);
+  console.log("Modify cart", itemQuants);
 
-  for (const stepper of steppers) {
-    stepper.addEventListener("change", updatePrice());
-    
-      function updatePrice() {
-        var result = document.getElementsByClassName("item__price");
-        result.textContent = result * this.stepper;
-      }
-    }
+for (const itemQuant of itemQuants) {
+    itemQuant.addEventListener("change", (event) => {
+      const itemSubtotal = document.getElementsByClassName("item__subtotal");
+      const itemPrice = JSON.parse(localStorage.getItem("price"));
+      itemSubtotal.innerHTML = `${event.target.value * itemPrice}`;
+    })
   }
+}
+
 
 // Display for empty cart
 let cartContents = getCartFromLS();
