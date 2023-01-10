@@ -97,15 +97,15 @@ function deleteItem() {
 
 //Modify cart
 function modifyQuantity() {
-  const itemQtys = document.getElementsByClassName("itemQuantity");
-  console.log ("Modify item", itemQtys);
+  const stepper = document.getElementsByClassName("itemQuantity");
+  console.log ("Modify item", stepper);
 
-  for (const itemQty of itemQtys) {
-    itemQty.addEventListener("change", updatePrice());
+  for (const stepper of steppers) {
+    stepper.addEventListener("change", updatePrice());
     
       function updatePrice() {
         var result = document.getElementsByClassName("item__price");
-        result.textContent = result * this.input;
+        result.textContent = result * this.stepper;
       }
     }
   }
