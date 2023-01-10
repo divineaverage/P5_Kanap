@@ -25,7 +25,7 @@ function fillCartHTML(product) {
       <div class="cart__item__content__description">
       <h2>${product.name}</h2>
       <p>${product.color}</p>
-      <p>${product.price}€</p>
+      <div class="item__price"><p>${product.price}€</p></div>
       </div>
       <div class="cart__item__content__settings">
         <div class="cart__item__content__settings__quantity">
@@ -84,49 +84,31 @@ function deleteItem() {
       object.parentNode.removeChild(object);
       localStorage.removeItem(object);
 
-      var itemColor = object.getAttribute("data-color");
-      console.log(itemColor)
-      var productId = object.getAttribute("data-id");
-      console.log(productId);
-
-      const productToDelete = itemColor.every(itemColor => {
-        return object.includes(itemColor);
-      })
-      console.log(productToDelete);
+      // get the cart before deleting
+      const oldCart = JSON.parse(localStorage.getItem("cart"));
+      // filter out the item to be deleted
+      const newCart = oldCart.filter((item) => item.id !== theIdToDelete);
+      // override 'cart' with an updated array
+      localStorage.setItem('cart', JSON.stringify(newCart));
       
     });
   }
 }
 
-// //Modify cart
-// function modifyQuantity() {
-//   //function, no param
-//   const quantityPickers = document.getElementsByClassName("itemQuantity");
-//   // set "quantityPickers" to DOM "itemQuantity"
-//   console.log("Modified item", quantityPickers);
-//   // console log
+//Modify cart
+function modifyQuantity() {
+  const itemQtys = document.getElementsByClassName("itemQuantity");
+  console.log ("Modify item", itemQtys);
 
-//   for (const input of quantityPickers)
-//   //for variable of iterable, sequentially - the input of each button
-//     input.addEventListener("change", (e) => {
-
-//     cartItem.id = e.target.closest("data-id")
-//     const item =
-
-// //   function updateValue(e) {
-// //     let priceContainer = document.getElementsByClassName("cart__item__content__description");
-// //     const price = priceContainer.querySelectorAll("p");
-// //     price.textContent = e.target.value;
-// //   }
-// });
-// }
-
-// storeName.addEventListener('input', (e) => {
-//   userDetails.name = e.target.value;
-//   console.log(userDetails.name);
-//   localStorage.setItem('userDetails', JSON.stringify(userDetails));
-//   storeName.value = JSON.parse(localStorage.getItem('userDetails'))
-// });
+  for (const itemQty of itemQtys) {
+    itemQty.addEventListener("change", updatePrice());
+    
+      function updatePrice() {
+        var result = document.getElementsByClassName("item__price");
+        result.textContent = result * this.input;
+      }
+    }
+  }
 
 // Display for empty cart
 let cartContents = getCartFromLS();
