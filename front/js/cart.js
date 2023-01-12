@@ -11,8 +11,6 @@ const priceTotal = document.getElementById("totalPrice");
 const quantityTotal = document.getElementById("totalQuantity");
 const cart = JSON.parse(localStorage.getItem("cart"));
 
-
-
 // HTML fill
 function fillCartHTML(product) {
   return `<article class="cart__item" data-id="${product.id}" data-color="${product.color}">
@@ -23,7 +21,7 @@ function fillCartHTML(product) {
       <div class="cart__item__content__description">
       <h2>${product.name}</h2>
       <p>${product.color}</p>
-      <p class="item__subtotal"><p>${product.price}€</p>
+      <p class="item__subtotal">${product.price}€</p>
       </div>
       <div class="cart__item__content__settings">
         <div class="cart__item__content__settings__quantity">
@@ -40,6 +38,7 @@ function fillCartHTML(product) {
 
 // Get existing cart from Local Storage
 function getCartFromLS() {
+  const cart = localStorage.getItem("cart");
   if (typeof cart === "string") {
     return JSON.parse(cart);
   }
@@ -48,26 +47,13 @@ function getCartFromLS() {
 
 //Populate cart
 function displayCart(products) {
-  //set param to products
   for (const product of products) {
-    //for variable of iterable, sequentially - products
     cartProducts.innerHTML += fillCartHTML(product);
-    //get variable's DOM "cart__items" and add result of fillCartHTML function
-    price += product.price;
-    //add the price of this single product to the total price
-    qty += product.quantity;
-    //add the quantity of this single product to the total quantity
   }
-  var price = 0;
-  var qty = 0;
-
-  priceTotal.textContent = price;
-  //"price" equals the text content within the DOM "totalPrice"
-  quantityTotal.textContent = qty;
-  //"qty" equals the text content within the DOM "totalQuantity"
 
   deleteItem();
-  modifyCart();
+  modifyItemQty();
+  resetTotal();
 }
 
 //Delete item
@@ -77,37 +63,65 @@ function deleteItem() {
 
   for (const button of buttons) {
     button.addEventListener("click", function (e) {
-      const object = e.target.closest(".cart__item");
+      const itemToDelete = e.target.closest(".cart__item");
+      console.log(e);
 
-      object.parentNode.removeChild(object);
-      localStorage.removeItem(object);
+      const { color, id } = itemToDelete.dataset;
 
-      // // get the cart before deleting
-      // const oldCart = JSON.parse(localStorage.getItem("cart"));
-      // // filter out the item to be deleted
-      // const newCart = oldCart.filter((item) => item.id !== theIdToDelete);
-      // // override 'cart' with an updated array
-      // localStorage.setItem('cart', JSON.stringify(newCart));
-      
+      itemToDelete.parentNode.removeChild(itemToDelete);
+      const cart = getCartFromLS();
+      const newCart = cart.filter((product) => {
+        if (product.color === color && product.id === id) {
+          return false;
+        }
+        return true;
+      });
+
+      setCartToLS(newCart);
+      resetTotal(newCart);
     });
   }
 }
 
 //Modify cart
-function modifyCart() {
-  const nodeList = document.getElementsByName("itemQuantity");
-  const itemQuants = Array.from(nodeList);
-  console.log("Modify cart", itemQuants);
+function modifyItemQty() {
+  let nodeList = document.getElementsByName("itemQuantity");
+  let qtyInputs = Array.from(nodeList);
+  console.log("Modify item quantity", qtyInputs);
 
-for (const itemQuant of itemQuants) {
-    itemQuant.addEventListener("change", (event) => {
-      const itemSubtotal = document.getElementsByClassName("item__subtotal");
-      const itemPrice = JSON.parse(localStorage.getItem("price"));
-      itemSubtotal.innerHTML = `${event.target.value * itemPrice}`;
-    })
-  }
+  qtyInputs.forEach(function (product) {
+    product.addEventListener("change", function (e) {
+      const subtotalToUpdate = e.target.closest(".item__subtotal");
+      console.log(e);
+
+      
+
+    });
+  });
 }
 
+// Reset cart total
+function resetTotal(cart) {
+  const localCart = cart || getCartFromLS();
+  let price = 0;
+  let qty = 0;
+
+  for (const product of localCart) {
+    price += product.price;
+    qty += product.quantity;
+  }
+  priceTotal.textContent = price;
+  quantityTotal.textContent = qty;
+}
+
+// Set new cart to Local Storage
+function setCartToLS(cart) {
+  if (typeof cart === "string") {
+    localStorage.setItem("cart", cart);
+  } else {
+    localStorage.setItem("cart", JSON.stringify(cart));
+  }
+}
 
 // Display for empty cart
 let cartContents = getCartFromLS();
