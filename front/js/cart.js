@@ -4,7 +4,6 @@ async function getProduct(id) {
   return response.json();
 }
 
-
 // DOM elements
 const cartQuantity = document.getElementById("itemQuantity");
 const cartProducts = document.getElementById("cart__items");
@@ -86,22 +85,42 @@ function deleteItem() {
 
 //Modify cart
 function modifyItemQty() {
-let nodeList = document.getElementsByClassName("itemQuantity");
+  let nodeList = document.getElementsByClassName("itemQuantity");
   let qtyInputs = Array.from(nodeList);
-  console.log("Modify item quantity", qtyInputs);
+  let itemSubtotal = document.getElementsByClassName("item__subtotal");
   
+  console.log("Current item quantity", qtyInputs);
+  console.log("Current item subtotal", itemSubtotal);
+    
   qtyInputs.forEach(function(qtyInputs){
     qtyInputs.addEventListener("change", function () {
-      console.log(qtyInputs.value);
+      console.log("Modify quantity to", qtyInputs.value);
+      console.log("Old subtotal is", itemSubtotal.value);
+      
 
-      const article = document.getElementById("cart__item");
-      const unitPrice = article.dataset.price;
-      const newSubtotal = unitPrice * qtyInputs.value;
-      console.log(newSubtotal);
-
+      })
     })
-  })
-}
+  }
+
+//   let nodeList = document.getElementsByClassName("itemQuantity");
+//   let currentQty = Array.from(nodeList);
+//   let htmlCollection = document.getElementsByClassName("item__subtotal");
+//   let currentSubtotal = Array.from(htmlCollection);
+//   console.log(currentQty, currentSubtotal);
+
+//   currentQty.forEach(function(currentQty){
+//     currentQty.addEventListener("change", function () {
+//       console.log(currentQty.value);
+//       console.log(currentSubtotal.value);
+//     }
+//     )}
+//   );
+// }
+
+      // const article = document.querySelector("#cart__item");
+      // const unitPrice = article.dataset.price;
+      // console.log(unitPrice.value);
+
 
 // Reset cart total
 function resetTotal(cart) {
