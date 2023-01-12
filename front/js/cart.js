@@ -94,7 +94,9 @@ let nodeList = document.getElementsByClassName("itemQuantity");
     qtyInputs.addEventListener("change", function () {
       console.log(qtyInputs.value);
 
-      const newSubtotal = product.price * parseInt(qtyInputs.value, 10);
+      const article = document.getElementById("cart__item");
+      const unitPrice = article.dataset.price;
+      const newSubtotal = unitPrice * qtyInputs.value;
       console.log(newSubtotal);
 
     })
