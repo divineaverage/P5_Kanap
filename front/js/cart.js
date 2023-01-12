@@ -4,6 +4,7 @@ async function getProduct(id) {
   return response.json();
 }
 
+
 // DOM elements
 const cartQuantity = document.getElementById("itemQuantity");
 const cartProducts = document.getElementById("cart__items");
@@ -85,19 +86,19 @@ function deleteItem() {
 
 //Modify cart
 function modifyItemQty() {
-  let nodeList = document.getElementsByName("itemQuantity");
+let nodeList = document.getElementsByClassName("itemQuantity");
   let qtyInputs = Array.from(nodeList);
   console.log("Modify item quantity", qtyInputs);
+  
+  qtyInputs.forEach(function(qtyInputs){
+    qtyInputs.addEventListener("change", function () {
+      console.log(qtyInputs.value);
 
-  qtyInputs.forEach(function (product) {
-    product.addEventListener("change", function (e) {
-      const subtotalToUpdate = e.target.closest(".item__subtotal");
-      console.log(e);
+      const newSubtotal = product.price * parseInt(qtyInputs.value, 10);
+      console.log(newSubtotal);
 
-      
-
-    });
-  });
+    })
+  })
 }
 
 // Reset cart total
