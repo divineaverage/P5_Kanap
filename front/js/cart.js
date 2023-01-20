@@ -87,13 +87,15 @@ function deleteItem() {
 function modifyItemQty() {
   let nodeList = document.getElementsByClassName("itemQuantity");
   let qtyInputs = Array.from(nodeList);
-  let itemSubtotal = document.getElementsByClassName("item__subtotal");
+  let htmlCollection = document.getElementsByClassName("item__subtotal");
+  let itemSubtotal = Array.prototype.slice.call(htmlCollection);
   
   console.log("Current item quantity", qtyInputs);
   console.log("Current item subtotal", itemSubtotal);
     
   qtyInputs.forEach(function(qtyInputs){
     qtyInputs.addEventListener("change", function () {
+
       console.log("Modify quantity to", qtyInputs.value);
       console.log("Old subtotal is", itemSubtotal.value);
       
