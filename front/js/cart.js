@@ -5,7 +5,6 @@ async function getProduct(id) {
 }
 
 // DOM elements
-const cartQuantity = document.getElementById("itemQuantity");
 const cartProducts = document.getElementById("cart__items");
 const priceTotal = document.getElementById("totalPrice");
 const quantityTotal = document.getElementById("totalQuantity");
@@ -56,6 +55,8 @@ function displayCart(products) {
   resetTotal();
 }
 
+
+
 //Delete item
 function deleteItem() {
   let buttons = document.getElementsByClassName("deleteItem");
@@ -84,27 +85,28 @@ function deleteItem() {
 }
 
 //Modify cart
+
 function modifyItemQty() {
   let nodeList = document.getElementsByClassName("itemQuantity");
   let qtyInputs = Array.from(nodeList);
   let htmlCollection = document.getElementsByClassName("item__subtotal");
   let itemSubtotal = Array.prototype.slice.call(htmlCollection);
-  
-  console.log("Current item quantity", qtyInputs);
-  console.log("Current item subtotal", itemSubtotal);
     
   qtyInputs.forEach(function(qtyInput, i){
+    var oldQty = qtyInput.value;
+    
     qtyInput.addEventListener("change", function () {
+      // console.log("Modify quantity to", qtyInput.value);
+      const newQty = qtyInput.value;
+      var oldSubtotal = itemSubtotal[i]?.innerHTML;
+      // console.log("Old subtotal is", oldSubtotal);
+      // console.log("Old quantity is", oldQty);
+      var oldSubtotalNum = oldSubtotal.replace("€", " ");
+      var itemPrice = oldSubtotalNum /= oldQty;
+      // console.log(itemPrice)
 
-      console.log("Modify quantity to", qtyInput.value);
-      console.log("Old subtotal is", itemSubtotal[i]?.innerHTML);
-
-      oldSubtotal = itemSubtotal[i]?.innerHTML;
-
-      itemPrice = oldSubtotal / qtyInput.value;
-      console.log = itemPrice;
-      
-
+      var newSubtotal = itemPrice *= newQty;
+      console.log(newSubtotal);
       })
     })
   }
