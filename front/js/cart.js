@@ -68,8 +68,8 @@ function deleteItem() {
       console.log(e);
 
       const { color, id } = itemToDelete.dataset;
-
       itemToDelete.parentNode.removeChild(itemToDelete);
+
       const cart = getCartFromLS();
       const newCart = cart.filter((product) => {
         if (product.color === color && product.id === id) {
@@ -96,20 +96,26 @@ function modifyItemQty() {
     var oldQty = qtyInput.value;
     
     qtyInput.addEventListener("change", function () {
-      // console.log("Modify quantity to", qtyInput.value);
-      const newQty = qtyInput.value;
+      var newQty = qtyInput.value;
       var oldSubtotal = itemSubtotal[i]?.innerHTML;
-      // console.log("Old subtotal is", oldSubtotal);
-      // console.log("Old quantity is", oldQty);
       var oldSubtotalNum = oldSubtotal.replace("€", " ");
       var itemPrice = oldSubtotalNum /= oldQty;
-      // console.log(itemPrice)
-
       var newSubtotal = itemPrice *= newQty;
+      console.log(newQty);
       console.log(newSubtotal);
-      })
+
+      if (newQty != oldQty) {
+          qtyInputs.splice(newQty);
+          itemSubtotal.splice(newSubtotal);
+          
+          setCartToLS(modifiedItem);
+          resetTotal(modifiedItem);
+        } 
+
     })
-  }
+  })
+}
+
 
 
 // Reset cart total
