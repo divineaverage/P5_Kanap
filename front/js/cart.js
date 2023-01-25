@@ -93,35 +93,21 @@ function modifyItemQty() {
   console.log("Current item quantity", qtyInputs);
   console.log("Current item subtotal", itemSubtotal);
     
-  qtyInputs.forEach(function(qtyInputs){
-    qtyInputs.addEventListener("change", function () {
+  qtyInputs.forEach(function(qtyInput, i){
+    qtyInput.addEventListener("change", function () {
 
-      console.log("Modify quantity to", qtyInputs.value);
-      console.log("Old subtotal is", itemSubtotal.value);
+      console.log("Modify quantity to", qtyInput.value);
+      console.log("Old subtotal is", itemSubtotal[i]?.innerHTML);
+
+      oldSubtotal = itemSubtotal[i]?.innerHTML;
+
+      itemPrice = oldSubtotal / qtyInput.value;
+      console.log = itemPrice;
       
 
       })
     })
   }
-
-//   let nodeList = document.getElementsByClassName("itemQuantity");
-//   let currentQty = Array.from(nodeList);
-//   let htmlCollection = document.getElementsByClassName("item__subtotal");
-//   let currentSubtotal = Array.from(htmlCollection);
-//   console.log(currentQty, currentSubtotal);
-
-//   currentQty.forEach(function(currentQty){
-//     currentQty.addEventListener("change", function () {
-//       console.log(currentQty.value);
-//       console.log(currentSubtotal.value);
-//     }
-//     )}
-//   );
-// }
-
-      // const article = document.querySelector("#cart__item");
-      // const unitPrice = article.dataset.price;
-      // console.log(unitPrice.value);
 
 
 // Reset cart total
@@ -159,15 +145,21 @@ if (cartContents.length > 0) {
 }
 
 // Validate form entry - Regex
-function ValidateEmail(inputText) {
+function validateEmail(inputText) {
   var mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-  if (inputText.value.match(mailformat)) {
+  if (inputText.match(mailformat)) {
     alert("Valid email address!");
-    document.form1.text1.focus();
     return true;
   } else {
     alert("You have entered an invalid email address!");
-    document.form1.text1.focus();
+    return false;
+  }
+}
+
+function validate(inputText) {
+  if (inputText.trim()) {
+    return true;
+  } else {
     return false;
   }
 }
@@ -176,6 +168,8 @@ function ValidateEmail(inputText) {
 function order() {
   const orderBtn = document.getElementById("order");
   orderBtn.addEventListener("click", (data) => {
+    data.preventDefault();
+    data.stopPropagation();
     let contact = {
       firstName: document.querySelector("#firstName").value,
       lastName: document.querySelector("#lastName").value,
@@ -185,20 +179,20 @@ function order() {
     };
     // Test form fields
     if (
-      testFirstName(contact.firstName) &&
-      testName(contact.lastName) == true &&
-      testcity(contact.city) == true &&
-      testemail(contact.email) == true &&
-      testlocation(contact.address) == true
+      validate(contact.firstName) &&
+      validate(contact.lastName) == true &&
+      validate(contact.city) == true &&
+      validateEmail(contact.email) == true &&
+      validate(contact.address) == true
     ) {
       // Create "products" table for back
       data.preventDefault();
-      let cart = getCart();
+      let cart = getCartFromLS();
       let products = [];
 
       // Push product ID from local storage into "products" table
       for (let item of cart) {
-        products.push(item.idProduct);
+        products.push(item.id);
       }
       // Create object
       const order = {
