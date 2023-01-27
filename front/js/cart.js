@@ -124,7 +124,6 @@ function modifyItemQty() {
   }
 
 
-
 // Reset cart total
 function resetTotal() {
   const localCart = getCartFromLS();
