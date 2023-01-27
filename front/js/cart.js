@@ -8,7 +8,6 @@ async function getProduct(id) {
 const cartProducts = document.getElementById("cart__items");
 const priceTotal = document.getElementById("totalPrice");
 const quantityTotal = document.getElementById("totalQuantity");
-const cart = JSON.parse(localStorage.getItem("cart"));
 
 // HTML fill
 function fillCartHTML(product) {
@@ -39,7 +38,7 @@ function fillCartHTML(product) {
 function getCartFromLS() {
   const cart = localStorage.getItem("cart");
   if (typeof cart === "string") {
-    return JSON.parse(cart);
+    return JSON.parse(cart) || [];
   }
   return cart || [];
 }
@@ -87,40 +86,48 @@ function deleteItem() {
 //Modify cart
 
 function modifyItemQty() {
-  let nodeList = document.getElementsByClassName("itemQuantity");
-  let qtyInputs = Array.from(nodeList);
-  let htmlCollection = document.getElementsByClassName("item__subtotal");
-  let itemSubtotal = Array.prototype.slice.call(htmlCollection);
+  let qtyHTMLCollect = document.getElementsByClassName("itemQuantity");
+  let qtyInputs = Array.from(qtyHTMLCollect);
+  let subtotalHTMLCollect = document.getElementsByClassName("item__subtotal");
+  let itemSubtotal = Array.from(subtotalHTMLCollect);
     
   qtyInputs.forEach(function(qtyInput, i){
     var oldQty = qtyInput.value;
     
-    qtyInput.addEventListener("change", function () {
+    qtyInput.addEventListener("change", function (e) {
       var newQty = qtyInput.value;
       var oldSubtotal = itemSubtotal[i]?.innerHTML;
       var oldSubtotalNum = oldSubtotal.replace("€", " ");
       var itemPrice = oldSubtotalNum /= oldQty;
-      var newSubtotal = itemPrice *= newQty;
+      var newSubtotal = (itemPrice *= newQty) + "€";
       console.log(newQty);
       console.log(newSubtotal);
 
-      if (newQty != oldQty) {
-          qtyInputs.splice(newQty);
-          itemSubtotal.splice(newSubtotal);
-          
-          setCartToLS(modifiedItem);
-          resetTotal(modifiedItem);
-        } 
+      if (newQty === oldQty) {
+        console.log("no update");
+      } else {
+        qtyHTMLCollect.value = newQty;
+        qtyHTMLCollect.innerHTML = newQty;
+        subtotalHTMLCollect.value = newSubtotal;
+        subtotalHTMLCollect.innerHTML = newSubtotal;
+
+        console.log(qtyHTMLCollect);
+        console.log(subtotalHTMLCollect);
+      }
+      
+
+      // setCartToLS();
+      // resetTotal();
+      });
 
     })
-  })
-}
+  }
 
 
 
 // Reset cart total
-function resetTotal(cart) {
-  const localCart = cart || getCartFromLS();
+function resetTotal() {
+  const localCart = getCartFromLS();
   let price = 0;
   let qty = 0;
 
