@@ -106,10 +106,10 @@ function modifyItemQty() {
       if (newQty === oldQty) {
         console.log("no update");
       } else {
-        qtyHTMLCollect.value = newQty;
-        qtyHTMLCollect.innerHTML = newQty;
-        subtotalHTMLCollect.value = newSubtotal;
-        subtotalHTMLCollect.innerHTML = newSubtotal;
+        // qtyHTMLCollect.value = newQty;
+        // qtyHTMLCollect[i].innerHTML = newQty;
+        // subtotalHTMLCollect.value = newSubtotal;
+        subtotalHTMLCollect[i].innerHtml = newSubtotal;
 
         console.log(qtyHTMLCollect);
         console.log(subtotalHTMLCollect);
