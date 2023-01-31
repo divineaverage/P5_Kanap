@@ -94,7 +94,7 @@ function modifyItemQty() {
   qtyInputs.forEach(function(qtyInput, i){
     var oldQty = qtyInput.value;
     
-    qtyInput.addEventListener("change", function (e) {
+    qtyInput.addEventListener("change", function () {
       var newQty = qtyInput.value;
       var oldSubtotal = itemSubtotal[i]?.innerHTML;
       var oldSubtotalNum = oldSubtotal.replace("€", " ");
@@ -103,21 +103,12 @@ function modifyItemQty() {
       console.log(newQty);
       console.log(newSubtotal);
 
-      if (newQty === oldQty) {
-        console.log("no update");
-      } else {
-        // qtyHTMLCollect.value = newQty;
-        // qtyHTMLCollect[i].innerHTML = newQty;
-        // subtotalHTMLCollect.value = newSubtotal;
+      if (newQty != oldQty) {
+        console.log("needs update");
         subtotalHTMLCollect[i].innerHtml = newSubtotal;
-
-        console.log(qtyHTMLCollect);
-        console.log(subtotalHTMLCollect);
+        // setCartToLS();
+        // resetTotal();
       }
-      
-
-      // setCartToLS();
-      // resetTotal();
       });
 
     })
